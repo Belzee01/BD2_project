@@ -12,22 +12,15 @@ namespace SQLAccess
         private int databaseId;
         private String createDate;
 
-        public String Name
-        {
-            get { return name; }
-            set { name = value; }
-        }
+        public string Name { get => name; set => name = value; }
+        public int DatabaseId { get => databaseId; set => databaseId = value; }
+        public string CreateDate { get => createDate; set => createDate = value; }
 
-        public int DatabaseId
+        public DatabaseModel(string name, int databaseId, string createDate)
         {
-            get { return databaseId; }
-            set { databaseId = value; }
-        }
-
-        public String CreateDate
-        {
-            get { return createDate; }
-            set { createDate = value; }
+            this.name = name;
+            this.databaseId = databaseId;
+            this.createDate = createDate;
         }
     }
 }

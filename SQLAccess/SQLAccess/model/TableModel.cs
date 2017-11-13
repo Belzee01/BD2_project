@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SQLAccess.model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,18 +9,19 @@ namespace SQLAccess
 {
     class TableModel
     {
-        private String schema;
-        private String tableName;
-        private List<String> columnNames;
-        private String dataType;
-        private int maxLength;
-        private int precision;
 
-        public string Schema { get => schema; set => schema = value; }
-        public string TableName { get => tableName; set => tableName = value; }
-        public List<string> ColumnNames { get => columnNames; set => columnNames = value; }
-        public string DataType { get => dataType; set => dataType = value; }
-        public int MaxLength { get => maxLength; set => maxLength = value; }
-        public int Precision { get => precision; set => precision = value; }
+        private List<ColumnModel> columnNames;
+
+        private TableSchemaModel tableSchemaModel;
+
+        public List<ColumnModel> ColumnNames { get => columnNames; set => columnNames = value; }
+
+        internal TableSchemaModel TableSchemaModel { get => tableSchemaModel; set => tableSchemaModel = value; }
+
+        public TableModel(TableSchemaModel tableSchemaModel, List<ColumnModel> columnNames)
+        {
+            this.TableSchemaModel = tableSchemaModel;
+            this.columnNames = columnNames;
+        }
     }
 }
