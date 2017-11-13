@@ -67,7 +67,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="database\DatabaseClient.cs" />
+    <Compile Include="database\DatabaseService.cs" />
     <Compile Include="database\DatabaseManager.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>

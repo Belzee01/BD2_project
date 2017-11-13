@@ -23,6 +23,10 @@ namespace SQLAccess
         public MainWindow()
         {
             InitializeComponent();
+
+            DatabaseManager databaseManager = new DatabaseManager();
+
+            Console.WriteLine(databaseManager.selectTableData("AdventureWorks", "dbo", "ErrorLog"));
         }
     }
 }
