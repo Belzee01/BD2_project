@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using static SQLAccess.Utils;
 
 namespace SQLAccess
 {
@@ -33,6 +34,11 @@ namespace SQLAccess
         #endregion
 
         #region On Loaded
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             List<DatabaseModel> databases = this.databaseManager.selectDatabaseList();
@@ -42,7 +48,7 @@ namespace SQLAccess
                 var item = new TreeViewItem()
                 {
                     Header = database.Name,
-                    Tag = database.Name
+                    Tag = DB_TYPE.DATABASE
                 };
 
                 item.Items.Add(null);
@@ -53,7 +59,14 @@ namespace SQLAccess
                 DatabaseView.Items.Add(item);
             }
         }
+        #endregion
 
+        #region Database Expanded event
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Database_Expanded(object sender, RoutedEventArgs e)
         {
             var item = (TreeViewItem)sender;
@@ -65,26 +78,33 @@ namespace SQLAccess
             //Clear dummy data
             item.Items.Clear();
 
-            var databaseName = (string)item.Tag;
+            var databaseName = (string)item.Header;
 
             //Get schemas and tables
             List<TableSchemaModel> schemas = this.databaseManager.selectTableSchemaList(databaseName);
 
-            foreach(var schema in schemas)
+            foreach (var schema in schemas)
             {
                 var sbt = new TreeViewItem()
                 {
                     Header = schema.Schema + "." + schema.TableName,
-                    Tag = schema.TableName
+                    Tag = DB_TYPE.TABLE
                 };
-               
-                //Handle expanding
+
+                //Handle double click
                 sbt.MouseDoubleClick += Table_Clicked;
 
                 item.Items.Add(sbt);
             }
         }
+        #endregion
 
+        #region Table Double Clicked
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Table_Clicked(object sender, RoutedEventArgs e)
         {
             

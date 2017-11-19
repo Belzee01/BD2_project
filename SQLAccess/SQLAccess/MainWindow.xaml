@@ -8,7 +8,7 @@
         Loaded="Window_Loaded"
         Title="MainWindow" Height="350" Width="525">
     <Grid>
-        
+
         <TreeView x:Name="DatabaseView">
             <TreeView.Resources>
 
@@ -17,7 +17,17 @@
                         <Setter.Value>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
-                                    <Image Width="20" Margin="3"  Source="Images/drive.png"/>
+                                    <Image Width="20" Margin="3" 
+                                           Source="{
+                                                Binding RelativeSource={
+                                                     RelativeSource Mode=FindAncestor,
+                                                     AncestorType={
+                                                        x:Type TreeViewItem
+                                                     }
+                                                }, 
+                                                Path=Tag,
+                                                Converter={x:Static local:HeaderToImageConverter.Instance}
+                                        }"/>
                                     <TextBlock VerticalAlignment="Center" Text="{Binding}"/>
                                 </StackPanel>
                             </DataTemplate>
@@ -27,6 +37,6 @@
 
             </TreeView.Resources>
         </TreeView>
-        
+
     </Grid>
 </Window>

@@ -54,11 +54,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="HeaderToImageConverter.cs" />
     <Compile Include="model\ColumnModel.cs" />
     <Compile Include="model\DatabaseModel.cs" />
     <Compile Include="database\QueryBuilder.cs" />
     <Compile Include="model\QueryModel.cs" />
     <Compile Include="model\TableModel.cs" />
+    <Compile Include="Utils.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
