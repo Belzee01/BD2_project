@@ -24,6 +24,9 @@ namespace SQLAccess
     {
         private DatabaseManager databaseManager;
 
+        private string currentDataBase = "";
+        private string currentSchema = "";
+        private string currentTable = "";
 
         #region Constructor
         public MainWindow()
@@ -79,6 +82,7 @@ namespace SQLAccess
             item.Items.Clear();
 
             var databaseName = (string)item.Header;
+            this.currentDataBase = databaseName;
 
             //Get schemas and tables
             List<TableSchemaModel> schemas = this.databaseManager.selectTableSchemaList(databaseName);
@@ -87,7 +91,7 @@ namespace SQLAccess
             {
                 var sbt = new TreeViewItem()
                 {
-                    Header = schema.Schema + "." + schema.TableName,
+                    Header = schema,
                     Tag = DB_TYPE.TABLE
                 };
 
@@ -107,7 +111,19 @@ namespace SQLAccess
         /// <param name="e"></param>
         private void Table_Clicked(object sender, RoutedEventArgs e)
         {
-            
+            var item = (TreeViewItem)sender;
+
+            var tableName = (TableSchemaModel)item.Header;
+
+            this.currentSchema = tableName.Schema;
+            this.currentTable = tableName.TableName;
+
+            TableModel tableModel = this.databaseManager.selectTableData(this.currentDataBase, this.currentSchema, this.currentTable);
+
+            foreach(var column in tableModel.Columns)
+            {
+                ColumnsGrid.Items.Add(column);
+            }
         }
 
         #endregion

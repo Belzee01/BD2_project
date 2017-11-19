@@ -19,5 +19,10 @@ namespace SQLAccess.model
             this.schema = schema;
             this.tableName = tableName;
         }
+
+        public override string ToString()
+        {
+            return this.schema + "." + this.tableName;
+        }
     }
 }
