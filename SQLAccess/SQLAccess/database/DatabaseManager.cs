@@ -11,7 +11,7 @@ namespace SQLAccess
     class DatabaseManager
     {
 
-        public void selectDatabaseList()
+        public List<DatabaseModel> selectDatabaseList()
         {
             List<DatabaseModel> listOfDatabases = new List<DatabaseModel>();
             using (SqlConnection conn = new SqlConnection(SQLAccess.Properties.Settings.Default.masterConnectionString))
@@ -25,14 +25,16 @@ namespace SQLAccess
                     Console.WriteLine("\t\tselectDatabaseList ---------------------------------------------------");
                     while (reader.Read())
                     {
-                        listOfDatabases.Add(new DatabaseModel((string)reader[0], (int)reader[1], (string)reader[2]));
+                        listOfDatabases.Add(new DatabaseModel((string)reader[0], (int)reader[1], (DateTime)reader[2]));
 
                         Console.WriteLine(String.Format("{0} \t | {1} \t | {2}", reader[0], reader[1], reader[2]));
                     }
                 }
             }
+            return listOfDatabases;
         }
 
+        // Returns table schema and table names from given database
         public List<TableSchemaModel> selectTableSchemaList(string databaseName)
         {
             List<TableSchemaModel> listOfTableSchemas = new List<TableSchemaModel>();

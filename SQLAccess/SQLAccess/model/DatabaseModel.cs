@@ -10,13 +10,13 @@ namespace SQLAccess
     {
         private String name;
         private int databaseId;
-        private String createDate;
+        private DateTime createDate;
 
         public string Name { get => name; set => name = value; }
         public int DatabaseId { get => databaseId; set => databaseId = value; }
-        public string CreateDate { get => createDate; set => createDate = value; }
+        public DateTime CreateDate { get => createDate; set => createDate = value; }
 
-        public DatabaseModel(string name, int databaseId, string createDate)
+        public DatabaseModel(string name, int databaseId, DateTime createDate)
         {
             this.name = name;
             this.databaseId = databaseId;
