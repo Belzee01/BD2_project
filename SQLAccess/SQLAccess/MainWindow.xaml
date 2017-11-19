@@ -52,11 +52,11 @@
             </Grid>
 
         </StackPanel>
-        <StackPanel Orientation="Vertical" Grid.Column="1">
-            <StackPanel Grid.Row="0">
+        <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="1">
+            <Grid>
                 <DataGrid x:Name="ColumnDatGrid" ItemsSource="{Binding}">
                 </DataGrid>
-            </StackPanel>
+            </Grid>
         </StackPanel>
         <StackPanel Grid.Row="1" Grid.Column="1">
             <DataGrid x:Name="ColumnDatGrid2" ItemsSource="{Binding}">
