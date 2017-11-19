@@ -124,8 +124,14 @@ namespace SQLAccess
             this.currentTable = tableName.TableName;
 
             TableModel tableModel = this.databaseManager.selectTableData(this.currentDataBase, this.currentSchema, this.currentTable);
+            List<QueryModel> queryModels = new List<QueryModel>();
 
-            ColumnDatGrid.DataContext = tableModel.Columns;
+            foreach (var column in tableModel.Columns)
+            {
+                queryModels.Add(new QueryModel(column, new ConstraintModel()));
+            }
+            
+            ColumnDatGrid.DataContext = queryModels;
             ColumnDatGrid2.DataContext = tableModel.Columns;
 
         }
