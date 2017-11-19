@@ -1,6 +1,7 @@
 ﻿using SQLAccess.model;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -28,11 +29,15 @@ namespace SQLAccess
         private string currentSchema = "";
         private string currentTable = "";
 
+        private List<ColumnModel> tableData;
+        public ICollectionView Customers { get; private set; }
+
         #region Constructor
         public MainWindow()
         {
             InitializeComponent();
             this.databaseManager = new DatabaseManager();
+            this.tableData = new List<ColumnModel>();
         }
         #endregion
 
@@ -120,10 +125,9 @@ namespace SQLAccess
 
             TableModel tableModel = this.databaseManager.selectTableData(this.currentDataBase, this.currentSchema, this.currentTable);
 
-            foreach(var column in tableModel.Columns)
-            {
-                ColumnsGrid.Items.Add(column);
-            }
+            ColumnDatGrid.DataContext = tableModel.Columns;
+            ColumnDatGrid2.DataContext = tableModel.Columns;
+
         }
 
         #endregion
