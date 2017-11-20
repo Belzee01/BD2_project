@@ -59,7 +59,10 @@
     <Compile Include="model\ConstraintModel.cs" />
     <Compile Include="model\DatabaseModel.cs" />
     <Compile Include="database\QueryBuilder.cs" />
-    <Compile Include="model\QueryModel.cs" />
+    <Compile Include="model\CompactConstraintModel.cs" />
+    <Compile Include="model\query\Query.cs" />
+    <Compile Include="model\query\QueryBuilder.cs" />
+    <Compile Include="model\query\QueryConverter.cs" />
     <Compile Include="model\TableModel.cs" />
     <Compile Include="Utils.cs" />
     <Page Include="MainWindow.xaml">

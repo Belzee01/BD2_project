@@ -1,6 +1,7 @@
 ﻿using SQLAccess.model;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -11,7 +12,7 @@ namespace SQLAccess
     class DatabaseManager
     {
 
-        public List<DatabaseModel> selectDatabaseList()
+        public List<DatabaseModel> SelectDatabaseList()
         {
             List<DatabaseModel> listOfDatabases = new List<DatabaseModel>();
             using (SqlConnection conn = new SqlConnection(SQLAccess.Properties.Settings.Default.masterConnectionString))
@@ -35,7 +36,7 @@ namespace SQLAccess
         }
 
         // Returns table schema and table names from given database
-        public List<TableSchemaModel> selectTableSchemaList(string databaseName)
+        public List<TableSchemaModel> SelectTableSchemaList(string databaseName)
         {
             List<TableSchemaModel> listOfTableSchemas = new List<TableSchemaModel>();
             using (SqlConnection conn = new SqlConnection(SQLAccess.Properties.Settings.Default.masterConnectionString))
@@ -58,7 +59,7 @@ namespace SQLAccess
             return listOfTableSchemas;
         }
 
-        public TableModel selectTableData(string databaseName, string tableSchema, string tableName)
+        public TableModel SelectTableData(string databaseName, string tableSchema, string tableName)
         {
             List<ColumnModel> listOfColumns = new List<ColumnModel>();
             using (SqlConnection conn = new SqlConnection(SQLAccess.Properties.Settings.Default.masterConnectionString))
@@ -90,6 +91,21 @@ namespace SQLAccess
                 }
                 return new TableModel(new TableSchemaModel(tableSchema, tableName), listOfColumns);
             }
+        }
+
+        public DataTable RetrieveDataByQuery(string databaseName, string tableSchema, string tableName)
+        {
+            string queryString = String.Format("SELECT * FROM {0}.{1}.{2}", databaseName, tableSchema, tableName);
+            DataTable data = new DataTable();
+
+            using (SqlConnection conn = new SqlConnection(SQLAccess.Properties.Settings.Default.masterConnectionString))
+            {
+                SqlDataAdapter adapter = new SqlDataAdapter(queryString, conn);
+
+                adapter.Fill(data);
+            }
+
+            return data;
         }
 
     }

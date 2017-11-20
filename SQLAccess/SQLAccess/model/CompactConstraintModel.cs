@@ -2,7 +2,7 @@
 
 namespace SQLAccess
 {
-    class QueryModel
+    class CompactConstraintModel
     {
         private ColumnModel columnModel;
         private ConstraintModel constraintModel;
@@ -16,7 +16,7 @@ namespace SQLAccess
         public string Constraint { get => constraintModel.Constraint; set => constraintModel.Constraint = value; }
         public string Or { get => constraintModel.Or; set => constraintModel.Or = value; }
 
-        public QueryModel(ColumnModel columnModel, ConstraintModel constraintModel)
+        public CompactConstraintModel(ColumnModel columnModel, ConstraintModel constraintModel)
         {
             this.columnModel = columnModel;
             this.constraintModel = constraintModel;

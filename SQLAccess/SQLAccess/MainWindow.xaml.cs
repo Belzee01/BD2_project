@@ -1,19 +1,9 @@
 ﻿using SQLAccess.model;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Data;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using static SQLAccess.Utils;
 
 namespace SQLAccess
@@ -25,9 +15,11 @@ namespace SQLAccess
     {
         private DatabaseManager databaseManager;
 
-        private string currentDataBase = "";
+        private string currentDatabase = "";
         private string currentSchema = "";
         private string currentTable = "";
+
+        private List<CompactConstraintModel> queryModels;
 
         private List<ColumnModel> tableData;
         public ICollectionView Customers { get; private set; }
@@ -38,6 +30,7 @@ namespace SQLAccess
             InitializeComponent();
             this.databaseManager = new DatabaseManager();
             this.tableData = new List<ColumnModel>();
+            this.queryModels = new List<CompactConstraintModel>();
         }
         #endregion
 
@@ -49,7 +42,7 @@ namespace SQLAccess
         /// <param name="e"></param>
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            List<DatabaseModel> databases = this.databaseManager.selectDatabaseList();
+            List<DatabaseModel> databases = this.databaseManager.SelectDatabaseList();
 
             foreach (var database in databases)
             {
@@ -87,10 +80,10 @@ namespace SQLAccess
             item.Items.Clear();
 
             var databaseName = (string)item.Header;
-            this.currentDataBase = databaseName;
+            this.currentDatabase = databaseName;
 
             //Get schemas and tables
-            List<TableSchemaModel> schemas = this.databaseManager.selectTableSchemaList(databaseName);
+            List<TableSchemaModel> schemas = this.databaseManager.SelectTableSchemaList(databaseName);
 
             foreach (var schema in schemas)
             {
@@ -123,19 +116,26 @@ namespace SQLAccess
             this.currentSchema = tableName.Schema;
             this.currentTable = tableName.TableName;
 
-            TableModel tableModel = this.databaseManager.selectTableData(this.currentDataBase, this.currentSchema, this.currentTable);
-            List<QueryModel> queryModels = new List<QueryModel>();
+            TableModel tableModel = this.databaseManager.SelectTableData(this.currentDatabase, this.currentSchema, this.currentTable);
+            queryModels = new List<CompactConstraintModel>();
 
             foreach (var column in tableModel.Columns)
             {
-                queryModels.Add(new QueryModel(column, new ConstraintModel()));
+                queryModels.Add(new CompactConstraintModel(column, new ConstraintModel()));
             }
-            
+
             ColumnDatGrid.DataContext = queryModels;
-            ColumnDatGrid2.DataContext = tableModel.Columns;
 
         }
 
         #endregion
+
+        private void RunQueryButton_Click(object sender, RoutedEventArgs e)
+        {
+
+            DataTable schemas = this.databaseManager.RetrieveDataByQuery(this.currentDatabase, this.currentSchema, this.currentTable);
+
+            ColumnDatGrid2.ItemsSource = schemas.DefaultView;
+        }
     }
 }
