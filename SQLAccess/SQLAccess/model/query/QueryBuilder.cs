@@ -16,9 +16,9 @@ namespace SQLAccess.model.query
             return query;
         }
 
-        public QueryBuilder Columns(CompactConstraintModel[] columns)
+        public QueryBuilder Columns(List<CompactConstraintModel> columns)
         {
-            this.query.Columns = new List<CompactConstraintModel>(columns);
+            this.query.Columns = columns;
             return this;
         }
         public QueryBuilder Database(string database)

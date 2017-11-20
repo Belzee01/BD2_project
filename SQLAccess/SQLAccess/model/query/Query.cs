@@ -8,7 +8,7 @@ namespace SQLAccess.model.query
 {
     class Query
     {
-        private QueryBuilder Builder()
+        public static QueryBuilder Builder()
         {
             return new QueryBuilder();
         }

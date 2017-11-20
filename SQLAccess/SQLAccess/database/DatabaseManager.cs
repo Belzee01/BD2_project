@@ -1,4 +1,5 @@
 ﻿using SQLAccess.model;
+using SQLAccess.model.query;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -93,9 +94,9 @@ namespace SQLAccess
             }
         }
 
-        public DataTable RetrieveDataByQuery(string databaseName, string tableSchema, string tableName)
+        public DataTable RetrieveDataByQuery(Query query)
         {
-            string queryString = String.Format("SELECT * FROM {0}.{1}.{2}", databaseName, tableSchema, tableName);
+            string queryString = new QueryConverter().ConvertToSQL(query);
             DataTable data = new DataTable();
 
             using (SqlConnection conn = new SqlConnection(SQLAccess.Properties.Settings.Default.masterConnectionString))

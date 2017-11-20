@@ -1,29 +1,40 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace SQLAccess.model.query
 {
     class QueryConverter
     {
-        private StringBuilder sb; 
+        private StringBuilder sb;
+
+        public QueryConverter()
+        {
+            sb = new StringBuilder("select ");
+        }
 
         public string ConvertToSQL(Query query)
         {
-            sb = new StringBuilder();
-
             List<string> columnNames = new List<string>();
-            foreach(var column in query.Columns)
+            foreach (var column in query.Columns)
             {
                 if (column.Show == true)
-                    columnNames.Add(column.ColumnName);
+                    sb.AppendFormat(" {0}, ", column.ColumnName);
             }
 
-            sb.AppendFormat("select {0} from {1}.{2}.{3} where ", columnNames, query.Database, query.Schema, query.Table);
+            sb.AppendFormat("from {1}.{2}.{3} where ", columnNames.ToString(), query.Database, query.Schema, query.Table);
 
-            List<ConstraintModel>
+            for (int i = 0; i < query.Columns.Count - 1; i++)
+            {
+                if (query.Columns[i].Constraint != "")
+                    sb.AppendFormat("{0} {1} and ", query.Columns[i].ColumnName, query.Columns[i].Constraint);
+            }
+
+            sb.Append("order by");
+            foreach (var column in query.Columns)
+            {
+                if (column.Sort == true)
+                    sb.AppendFormat(" {0}, ", column.ColumnName);
+            }
 
             return sb.ToString();
         }

@@ -1,4 +1,5 @@
 ﻿using SQLAccess.model;
+using SQLAccess.model.query;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -132,8 +133,14 @@ namespace SQLAccess
 
         private void RunQueryButton_Click(object sender, RoutedEventArgs e)
         {
+            Query query = Query.Builder()
+                .Database(this.currentDatabase)
+                .Schema(this.currentSchema)
+                .Table(this.currentTable)
+                .Columns(this.queryModels)
+                .Build();
 
-            DataTable schemas = this.databaseManager.RetrieveDataByQuery(this.currentDatabase, this.currentSchema, this.currentTable);
+            DataTable schemas = this.databaseManager.RetrieveDataByQuery(query);
 
             ColumnDatGrid2.ItemsSource = schemas.DefaultView;
         }
