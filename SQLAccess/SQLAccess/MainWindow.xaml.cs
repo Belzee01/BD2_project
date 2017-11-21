@@ -1,5 +1,6 @@
 ﻿using SQLAccess.model;
 using SQLAccess.model.query;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -24,6 +25,7 @@ namespace SQLAccess
         private List<CompactConstraintModel> queryModels;
 
         private List<ColumnModel> tableData;
+        private DataTable schemas;
         public ICollectionView Customers { get; private set; }
 
         #region Constructor
@@ -141,7 +143,7 @@ namespace SQLAccess
                 .Columns(this.queryModels)
                 .Build();
 
-            DataTable schemas = this.databaseManager.RetrieveDataByQuery(query);
+            schemas = this.databaseManager.RetrieveDataByQuery(query);
 
             ColumnDatGrid2.ItemsSource = schemas.DefaultView;
         }
@@ -158,6 +160,25 @@ namespace SQLAccess
 
             double x = (double)eargs.Delta;
             double y = instScroll2.VerticalOffset;
+
+            Console.WriteLine("Percantage value: " + (y / instScroll2.ScrollableHeight) * 100.0);
+
+            //// Optimalization mechanism TODO
+            if (((y / instScroll2.ScrollableHeight) * 100.0) >= 70)
+            {
+                Query query = Query.Builder()
+                .Database(this.currentDatabase)
+                .Schema(this.currentSchema)
+                .Table(this.currentTable)
+                .Columns(this.queryModels)
+                .Build();
+
+                DataTable temp = this.databaseManager.RetrieveDataByQuery(query);
+
+                this.schemas.Merge(temp);
+               
+            }
+            /////
 
             instScroll2.ScrollToVerticalOffset(y - x);
         }
