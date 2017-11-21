@@ -143,7 +143,7 @@ namespace SQLAccess
                 .Columns(this.queryModels)
                 .Build();
 
-            schemas = this.databaseManager.RetrieveDataByQuery(query);
+            schemas = this.databaseManager.RetrieveDataByQuery(query, 0);
 
             ColumnDatGrid2.ItemsSource = schemas.DefaultView;
         }
@@ -173,7 +173,8 @@ namespace SQLAccess
                 .Columns(this.queryModels)
                 .Build();
 
-                DataTable temp = this.databaseManager.RetrieveDataByQuery(query);
+                Console.WriteLine("ROWS Count: " + this.schemas.Rows.Count);
+                DataTable temp = this.databaseManager.RetrieveDataByQuery(query, this.schemas.Rows.Count);
 
                 this.schemas.Merge(temp);
                
@@ -191,6 +192,11 @@ namespace SQLAccess
             double y = instScroll1.VerticalOffset;
 
             instScroll1.ScrollToVerticalOffset(y - x);
+        }
+
+        private void LoadDynamicData()
+        {
+
         }
     }
 }
