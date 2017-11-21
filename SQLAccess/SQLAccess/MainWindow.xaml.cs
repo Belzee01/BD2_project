@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using static SQLAccess.Utils;
 
 namespace SQLAccess
@@ -143,6 +144,32 @@ namespace SQLAccess
             DataTable schemas = this.databaseManager.RetrieveDataByQuery(query);
 
             ColumnDatGrid2.ItemsSource = schemas.DefaultView;
+        }
+
+        private void instScroll_Loaded(object sender, RoutedEventArgs e)
+        {
+            ColumnDatGrid.AddHandler(MouseWheelEvent, new RoutedEventHandler(MyMouseWheelGrid1), true);
+            ColumnDatGrid2.AddHandler(MouseWheelEvent, new RoutedEventHandler(MyMouseWheelGrid2), true);
+        }
+
+        private void MyMouseWheelGrid2(object sender, RoutedEventArgs e)
+        {
+            MouseWheelEventArgs eargs = (MouseWheelEventArgs)e;
+
+            double x = (double)eargs.Delta;
+            double y = instScroll2.VerticalOffset;
+
+            instScroll2.ScrollToVerticalOffset(y - x);
+        }
+
+        private void MyMouseWheelGrid1(object sender, RoutedEventArgs e)
+        {
+            MouseWheelEventArgs eargs = (MouseWheelEventArgs)e;
+
+            double x = (double)eargs.Delta;
+            double y = instScroll1.VerticalOffset;
+
+            instScroll1.ScrollToVerticalOffset(y - x);
         }
     }
 }

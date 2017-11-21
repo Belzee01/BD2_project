@@ -7,6 +7,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace SQLAccess
 {
@@ -96,15 +97,24 @@ namespace SQLAccess
 
         public DataTable RetrieveDataByQuery(Query query)
         {
-            string queryString = new QueryConverter().ConvertToSQL(query);
+            string queryString = null;
             DataTable data = new DataTable();
 
-            using (SqlConnection conn = new SqlConnection(SQLAccess.Properties.Settings.Default.masterConnectionString))
+            try
             {
-                SqlDataAdapter adapter = new SqlDataAdapter(queryString, conn);
+                queryString = new QueryConverter().ConvertToSQL(query);
 
-                adapter.Fill(data);
+                using (SqlConnection conn = new SqlConnection(SQLAccess.Properties.Settings.Default.masterConnectionString))
+                {
+                    SqlDataAdapter adapter = new SqlDataAdapter(queryString, conn);
+
+                    adapter.Fill(data);
+                }
+            }catch(ArgumentException e)
+            {
+                MessageBox.Show(e.Message, "Confirmation", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
+           
 
             return data;
         }

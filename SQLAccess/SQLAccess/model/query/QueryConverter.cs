@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text;
 
 namespace SQLAccess.model.query
@@ -9,31 +10,63 @@ namespace SQLAccess.model.query
 
         public QueryConverter()
         {
-            sb = new StringBuilder("select ");
+            sb = new StringBuilder("select top 100");
         }
 
-        public string ConvertToSQL(Query query)
+        public string ConvertToSQL(Query query) 
         {
             List<string> columnNames = new List<string>();
             foreach (var column in query.Columns)
             {
                 if (column.Show == true)
-                    sb.AppendFormat(" {0}, ", column.ColumnName);
+                    columnNames.Add(column.ColumnName);
             }
 
-            sb.AppendFormat("from {1}.{2}.{3} where ", columnNames.ToString(), query.Database, query.Schema, query.Table);
+            if (columnNames.Count < 1)
+                throw new ArgumentException("Column display list cannot be empty!");
 
-            for (int i = 0; i < query.Columns.Count - 1; i++)
+            if (columnNames.Count > 0)
             {
-                if (query.Columns[i].Constraint != "")
-                    sb.AppendFormat("{0} {1} and ", query.Columns[i].ColumnName, query.Columns[i].Constraint);
+                for (int i = 0; i < columnNames.Count - 1; i++)
+                {
+                    sb.AppendFormat(" [{0}], ", columnNames[i]);
+                }
+                sb.AppendFormat(" [{0}] ", columnNames[columnNames.Count - 1]);
+            }
+            sb.AppendFormat("from {0}.{1}.{2} ", query.Database, query.Schema, query.Table);
+
+            List<CompactConstraintModel> columnWithConstraints = new List<CompactConstraintModel>();
+            foreach (var column in query.Columns)
+            {
+                if (column.Constraint != "")
+                    columnWithConstraints.Add(column);
             }
 
-            sb.Append("order by");
+            if (columnWithConstraints.Count > 0)
+            {
+                sb.Append("where ");
+                for (int i = 0; i < columnWithConstraints.Count - 1; i++)
+                {
+                    sb.AppendFormat("[{0}] {1} and ", columnWithConstraints[i].ColumnName, columnWithConstraints[i].Constraint);
+                }
+                sb.AppendFormat("[{0}] {1} ", columnWithConstraints[columnWithConstraints.Count - 1].ColumnName, columnWithConstraints[columnWithConstraints.Count - 1].Constraint);
+            }
+
+            List<string> columnsWithSort = new List<string>();
             foreach (var column in query.Columns)
             {
                 if (column.Sort == true)
-                    sb.AppendFormat(" {0}, ", column.ColumnName);
+                    columnsWithSort.Add(column.ColumnName);
+            }
+
+            if (columnsWithSort.Count > 0)
+            {
+                sb.Append("order by");
+                for (int i = 0; i < columnsWithSort.Count - 1; i++)
+                {
+                    sb.AppendFormat(" [{0}], ", columnsWithSort[i]);
+                }
+                sb.AppendFormat(" [{0}] ", columnsWithSort[columnsWithSort.Count - 1]);
             }
 
             return sb.ToString();
