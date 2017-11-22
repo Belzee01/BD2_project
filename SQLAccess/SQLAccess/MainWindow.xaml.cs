@@ -22,6 +22,8 @@ namespace SQLAccess
         private string currentSchema = "";
         private string currentTable = "";
 
+        private Int32 offsetDown = 0;
+
         private List<CompactConstraintModel> queryModels;
 
         private List<ColumnModel> tableData;
@@ -35,6 +37,7 @@ namespace SQLAccess
             this.databaseManager = new DatabaseManager();
             this.tableData = new List<ColumnModel>();
             this.queryModels = new List<CompactConstraintModel>();
+            this.schemas = new DataTable();
         }
         #endregion
 
@@ -136,6 +139,8 @@ namespace SQLAccess
 
         private void RunQueryButton_Click(object sender, RoutedEventArgs e)
         {
+            this.offsetDown = 0;
+            this.schemas.Clear();
             Query query = Query.Builder()
                 .Database(this.currentDatabase)
                 .Schema(this.currentSchema)
@@ -143,9 +148,12 @@ namespace SQLAccess
                 .Columns(this.queryModels)
                 .Build();
 
-            schemas = this.databaseManager.RetrieveDataByQuery(query, 0);
+            this.schemas = this.databaseManager.RetrieveDataByQuery(query, this.offsetDown);
+
+            this.offsetDown = this.offsetDown + 100;
 
             ColumnDatGrid2.ItemsSource = schemas.DefaultView;
+            instScroll2.ScrollToVerticalOffset(0.0);
         }
 
         private void instScroll_Loaded(object sender, RoutedEventArgs e)
@@ -164,21 +172,8 @@ namespace SQLAccess
             Console.WriteLine("Percantage value: " + (y / instScroll2.ScrollableHeight) * 100.0);
 
             //// Optimalization mechanism TODO
-            if (((y / instScroll2.ScrollableHeight) * 100.0) >= 70)
-            {
-                Query query = Query.Builder()
-                .Database(this.currentDatabase)
-                .Schema(this.currentSchema)
-                .Table(this.currentTable)
-                .Columns(this.queryModels)
-                .Build();
-
-                Console.WriteLine("ROWS Count: " + this.schemas.Rows.Count);
-                DataTable temp = this.databaseManager.RetrieveDataByQuery(query, this.schemas.Rows.Count);
-
-                this.schemas.Merge(temp);
-               
-            }
+            if (((y / instScroll2.ScrollableHeight) * 100.0) == 100.0)
+                LoadDynamicDataOffsetDown();
             /////
 
             instScroll2.ScrollToVerticalOffset(y - x);
@@ -194,9 +189,21 @@ namespace SQLAccess
             instScroll1.ScrollToVerticalOffset(y - x);
         }
 
-        private void LoadDynamicData()
+        private void LoadDynamicDataOffsetDown()
         {
+            Query query = Query.Builder()
+                .Database(this.currentDatabase)
+                .Schema(this.currentSchema)
+                .Table(this.currentTable)
+                .Columns(this.queryModels)
+                .Build();
 
+            Console.WriteLine("ROWS Count: " + this.schemas.Rows.Count);
+
+            DataTable temp = this.databaseManager.RetrieveDataByQuery(query, this.offsetDown);
+
+            this.offsetDown = this.offsetDown + 100;
+            this.schemas.Merge(temp);
         }
     }
 }

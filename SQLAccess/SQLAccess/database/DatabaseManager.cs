@@ -95,30 +95,6 @@ namespace SQLAccess
             }
         }
 
-        public DataTable RetrieveDataByQuery(Query query)
-        {
-            string queryString = null;
-            DataTable data = new DataTable();
-
-            try
-            {
-                queryString = new QueryConverter().ConvertToSQL(query);
-
-                using (SqlConnection conn = new SqlConnection(SQLAccess.Properties.Settings.Default.masterConnectionString))
-                {
-                    SqlDataAdapter adapter = new SqlDataAdapter(queryString, conn);
-
-                    adapter.Fill(data);
-                }
-            }catch(ArgumentException e)
-            {
-                MessageBox.Show(e.Message, "Confirmation", MessageBoxButton.OK, MessageBoxImage.Warning);
-            }
-           
-
-            return data;
-        }
-
         public DataTable RetrieveDataByQuery(Query query, int offset)
         {
             string queryString = null;
