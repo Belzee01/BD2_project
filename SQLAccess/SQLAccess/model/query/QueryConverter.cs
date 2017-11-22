@@ -63,9 +63,9 @@ namespace SQLAccess.model.query
                 stringBuilder.Append("where ");
                 for (int i = 0; i < columnWithConstraints.Count - 1; i++)
                 {
-                    stringBuilder.AppendFormat("[{0}] {1} and ", columnWithConstraints[i].ColumnName, columnWithConstraints[i].Constraint);
+                    stringBuilder.AppendFormat("[{0}] {1} and ", columnWithConstraints[i].ColumnName, ValidateValue(columnWithConstraints[i].Constraint));
                 }
-                stringBuilder.AppendFormat("[{0}] {1} ", columnWithConstraints[columnWithConstraints.Count - 1].ColumnName, columnWithConstraints[columnWithConstraints.Count - 1].Constraint);
+                stringBuilder.AppendFormat("[{0}] {1} ", columnWithConstraints[columnWithConstraints.Count - 1].ColumnName, ValidateValue(columnWithConstraints[columnWithConstraints.Count - 1].Constraint));
             }
         }
 
@@ -91,6 +91,19 @@ namespace SQLAccess.model.query
             {
                 stringBuilder.Append(" (SELECT NULL) ");
             }
+        }
+
+        private object ValidateValue(object val)
+        {
+            if(val.GetType() == typeof(string))
+            {
+                string newVal = val.ToString();
+                newVal = newVal.Replace("'", "''");
+
+                return newVal;
+            }
+
+            return val;
         }
 
         #endregion
