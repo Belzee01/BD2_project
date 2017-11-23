@@ -13,10 +13,10 @@ namespace SQLAccess.model
         public bool Show { get => show; set => show = value; }
         public SORT Sort { get => sort; set => sort = value; }
         public string AndExpression { get => constraint.Expression; set => constraint.Expression = value; }
-        public string AndValue { get => constraint.Value; set => constraint.Value = value; }
+        public object AndValue { get => constraint.Value; set => constraint.Value = value; }
 
         public string OrExpression { get => or.Expression; set => or.Expression = value; }
-        public string OrValue { get => or.Value; set => or.Value = value; }
+        public object OrValue { get => or.Value; set => or.Value = value; }
 
         public ConstraintModel()
         {

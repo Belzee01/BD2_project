@@ -25,12 +25,9 @@ namespace SQLAccess
 
                 using (SqlDataReader reader = command.ExecuteReader())
                 {
-                    Console.WriteLine("\t\tselectDatabaseList ---------------------------------------------------");
                     while (reader.Read())
                     {
                         listOfDatabases.Add(new DatabaseModel((string)reader[0], (int)reader[1], (DateTime)reader[2]));
-
-                        Console.WriteLine(String.Format("{0} \t | {1} \t | {2}", reader[0], reader[1], reader[2]));
                     }
                 }
             }
@@ -46,15 +43,12 @@ namespace SQLAccess
                 conn.Open();
 
                 SqlCommand command = new SqlCommand(String.Format("SELECT TABLE_SCHEMA, TABLE_NAME FROM {0}.INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE'", databaseName), conn);
-
-                Console.WriteLine("\t\tselectSchemas -------------------------------------------------------");
+                
                 using (SqlDataReader reader = command.ExecuteReader())
                 {
                     while (reader.Read())
                     {
                         listOfTableSchemas.Add(new TableSchemaModel((string)reader[0], (string)reader[1]));
-
-                        Console.WriteLine(String.Format("{0} \t | {1} \t", reader[0], reader[1]));
                     }
                 }
             }
@@ -80,15 +74,20 @@ namespace SQLAccess
 
                 command.Parameters.Add(new SqlParameter("1", tableName));
                 command.Parameters.Add(new SqlParameter("2", tableSchema));
-
-                Console.WriteLine("\t\tselectColumns -------------------------------------------------------");
+                
                 using (SqlDataReader reader = command.ExecuteReader())
                 {
                     while (reader.Read())
                     {
-                        listOfColumns.Add(new ColumnModel((string)reader[0], (string)reader[1], (short)reader[2], (byte)reader[3]));
+                        try
+                        {
+                            listOfColumns.Add(new ColumnModel((string)reader[0], (string)reader[1], (short)reader[2], (byte)reader[3]));
+                        }
+                        catch (System.ArgumentException e)
+                        {
+                            MessageBox.Show("Type not found : " + e.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
 
-                        Console.WriteLine(String.Format("{0} \t | {1} \t {2} \t | {3}", reader[0], reader[1], reader[2], reader[3]));
+                        }
                     }
                 }
                 return new TableModel(new TableSchemaModel(tableSchema, tableName), listOfColumns);
@@ -108,7 +107,14 @@ namespace SQLAccess
                 {
                     SqlDataAdapter adapter = new SqlDataAdapter(queryString, conn);
 
-                    adapter.Fill(data);
+                    try
+                    {
+                        adapter.Fill(data);
+                    } catch(SqlException e)
+                    {
+                        MessageBox.Show(e.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+
+                    }
                 }
             }
             catch (ArgumentException e)

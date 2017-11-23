@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Text;
 
 namespace SQLAccess.model.query
@@ -54,7 +55,7 @@ namespace SQLAccess.model.query
             List<CompactConstraintModel> columnWithConstraints = new List<CompactConstraintModel>();
             foreach (var column in query.Columns)
             {
-                if (column.AndExpression != null && column.AndValue != null && column.AndExpression != "" && column.AndValue != "")
+                if (column.And != null && column.AndValue != null && column.And != "" && (string)column.AndValue != "")
                     columnWithConstraints.Add(column);
             }
 
@@ -63,31 +64,31 @@ namespace SQLAccess.model.query
                 stringBuilder.Append("where ");
                 for (int i = 0; i < columnWithConstraints.Count - 1; i++)
                 {
-                    stringBuilder.AppendFormat("([{0}] {1} {2} ", 
-                        columnWithConstraints[i].ColumnName, 
-                        columnWithConstraints[i].AndExpression,
+                    stringBuilder.AppendFormat("([{0}] {1} {2} ",
+                        columnWithConstraints[i].ColumnName,
+                        columnWithConstraints[i].And,
                         ValidateValue(columnWithConstraints[i].AndValue));
 
-                    if (columnWithConstraints[i].OrExpression != "" && columnWithConstraints[i].OrValue != "")
+                    if (columnWithConstraints[i].Or != "" && columnWithConstraints[i].OrValue != null && (string)columnWithConstraints[i].OrValue != "")
                     {
-                        stringBuilder.AppendFormat("or [{0}] {1} {2}) and ", 
-                            columnWithConstraints[i].ColumnName, 
-                            columnWithConstraints[i].OrExpression, 
+                        stringBuilder.AppendFormat("or [{0}] {1} {2}) and ",
+                            columnWithConstraints[i].ColumnName,
+                            columnWithConstraints[i].Or,
                             ValidateValue(columnWithConstraints[i].OrValue));
                     }
                     else
                         stringBuilder.Append(") and ");
                 }
-                stringBuilder.AppendFormat("([{0}] {1} {2} ", 
+                stringBuilder.AppendFormat("([{0}] {1} {2} ",
                     columnWithConstraints[columnWithConstraints.Count - 1].ColumnName,
-                    columnWithConstraints[columnWithConstraints.Count - 1].AndExpression,
+                    columnWithConstraints[columnWithConstraints.Count - 1].And,
                     ValidateValue(columnWithConstraints[columnWithConstraints.Count - 1].AndValue));
 
-                if (columnWithConstraints[columnWithConstraints.Count - 1].OrExpression != "" && columnWithConstraints[columnWithConstraints.Count - 1].OrValue != "")
+                if (columnWithConstraints[columnWithConstraints.Count - 1].Or != "" && columnWithConstraints[columnWithConstraints.Count - 1].OrValue != null && (string)columnWithConstraints[columnWithConstraints.Count - 1].OrValue != "")
                 {
-                    stringBuilder.AppendFormat("or [{0}] {1} {2}) ", 
+                    stringBuilder.AppendFormat("or [{0}] {1} {2}) ",
                         columnWithConstraints[columnWithConstraints.Count - 1].ColumnName,
-                        columnWithConstraints[columnWithConstraints.Count - 1].OrExpression,
+                        columnWithConstraints[columnWithConstraints.Count - 1].Or,
                         ValidateValue(columnWithConstraints[columnWithConstraints.Count - 1].OrValue));
                 }
                 else
@@ -119,6 +120,10 @@ namespace SQLAccess.model.query
             }
         }
 
+        #endregion
+
+        #region Validation based on column type
+
         private object ValidateValue(object val)
         {
             if (val.GetType() == typeof(string))
@@ -129,7 +134,7 @@ namespace SQLAccess.model.query
                 return "'" + newVal + "'";
             }
 
-            return val;
+            return "'" + val + "'";
         }
 
         #endregion

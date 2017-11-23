@@ -9,10 +9,10 @@ namespace SQLAccess.model.conditions
     class Condition
     {
         private string expression;
-        private string value;
+        private object value;
 
         public string Expression { get => expression; set => expression = value; }
-        public string Value { get => value; set => this.value = value; }
+        public object Value { get => value; set => this.value = value; }
 
         public Condition(string expression, string value)
         {
