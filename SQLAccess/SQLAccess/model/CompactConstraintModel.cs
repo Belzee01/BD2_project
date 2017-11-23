@@ -1,4 +1,5 @@
 ﻿using SQLAccess.model;
+using System.Collections.Generic;
 
 namespace SQLAccess
 {
@@ -7,14 +8,18 @@ namespace SQLAccess
         private ColumnModel columnModel;
         private ConstraintModel constraintModel;
 
-        public string ColumnName { get => columnModel.ColumnName; set => columnModel.ColumnName = value; }
-        public string DataType { get => columnModel.DataType; set => columnModel.DataType = value; }
-        public short MaxLength { get => columnModel.MaxLength; set => columnModel.MaxLength = value; }
-        public byte Precision { get => columnModel.Precision; set => columnModel.Precision = value; }
+        public string ColumnName { get => columnModel.ColumnName; }
+        public string DataType { get => columnModel.DataType; }
+        public short MaxLength { get => columnModel.MaxLength;}
+        public byte Precision { get => columnModel.Precision; }
         public bool Show { get => constraintModel.Show; set => constraintModel.Show = value; }
         public SORT Sort { get => constraintModel.Sort; set => constraintModel.Sort = value; }
-        public string Constraint { get => constraintModel.Constraint; set => constraintModel.Constraint = value; }
-        public string Or { get => constraintModel.Or; set => constraintModel.Or = value; }
+
+        public string AndExpression { get => constraintModel.AndExpression; set => constraintModel.AndExpression = value; }
+        public string AndValue { get => constraintModel.AndValue; set => constraintModel.AndValue = value; }
+
+        public string OrExpression { get => constraintModel.OrExpression; set => constraintModel.OrExpression = value; }
+        public string OrValue { get => constraintModel.OrValue; set => constraintModel.OrValue = value; }
 
         public CompactConstraintModel(ColumnModel columnModel, ConstraintModel constraintModel)
         {

@@ -54,7 +54,7 @@ namespace SQLAccess.model.query
             List<CompactConstraintModel> columnWithConstraints = new List<CompactConstraintModel>();
             foreach (var column in query.Columns)
             {
-                if (column.Constraint != "")
+                if (column.AndExpression != null && column.AndValue != null && column.AndExpression != "" && column.AndValue != "")
                     columnWithConstraints.Add(column);
             }
 
@@ -63,9 +63,35 @@ namespace SQLAccess.model.query
                 stringBuilder.Append("where ");
                 for (int i = 0; i < columnWithConstraints.Count - 1; i++)
                 {
-                    stringBuilder.AppendFormat("[{0}] {1} and ", columnWithConstraints[i].ColumnName, ValidateValue(columnWithConstraints[i].Constraint));
+                    stringBuilder.AppendFormat("([{0}] {1} {2} ", 
+                        columnWithConstraints[i].ColumnName, 
+                        columnWithConstraints[i].AndExpression,
+                        ValidateValue(columnWithConstraints[i].AndValue));
+
+                    if (columnWithConstraints[i].OrExpression != "" && columnWithConstraints[i].OrValue != "")
+                    {
+                        stringBuilder.AppendFormat("or [{0}] {1} {2}) and ", 
+                            columnWithConstraints[i].ColumnName, 
+                            columnWithConstraints[i].OrExpression, 
+                            ValidateValue(columnWithConstraints[i].OrValue));
+                    }
+                    else
+                        stringBuilder.Append(") and ");
                 }
-                stringBuilder.AppendFormat("[{0}] {1} ", columnWithConstraints[columnWithConstraints.Count - 1].ColumnName, ValidateValue(columnWithConstraints[columnWithConstraints.Count - 1].Constraint));
+                stringBuilder.AppendFormat("([{0}] {1} {2} ", 
+                    columnWithConstraints[columnWithConstraints.Count - 1].ColumnName,
+                    columnWithConstraints[columnWithConstraints.Count - 1].AndExpression,
+                    ValidateValue(columnWithConstraints[columnWithConstraints.Count - 1].AndValue));
+
+                if (columnWithConstraints[columnWithConstraints.Count - 1].OrExpression != "" && columnWithConstraints[columnWithConstraints.Count - 1].OrValue != "")
+                {
+                    stringBuilder.AppendFormat("or [{0}] {1} {2}) ", 
+                        columnWithConstraints[columnWithConstraints.Count - 1].ColumnName,
+                        columnWithConstraints[columnWithConstraints.Count - 1].OrExpression,
+                        ValidateValue(columnWithConstraints[columnWithConstraints.Count - 1].OrValue));
+                }
+                else
+                    sb.Append(" ) ");
             }
         }
 
@@ -95,12 +121,12 @@ namespace SQLAccess.model.query
 
         private object ValidateValue(object val)
         {
-            if(val.GetType() == typeof(string))
+            if (val.GetType() == typeof(string))
             {
                 string newVal = val.ToString();
                 newVal = newVal.Replace("'", "''");
 
-                return newVal;
+                return "'" + newVal + "'";
             }
 
             return val;

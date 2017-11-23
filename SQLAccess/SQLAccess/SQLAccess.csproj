@@ -56,6 +56,7 @@
     </ApplicationDefinition>
     <Compile Include="HeaderToImageConverter.cs" />
     <Compile Include="model\ColumnModel.cs" />
+    <Compile Include="model\conditions\Condition.cs" />
     <Compile Include="model\ConstraintModel.cs" />
     <Compile Include="model\DatabaseModel.cs" />
     <Compile Include="model\CompactConstraintModel.cs" />

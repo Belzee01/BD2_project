@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SQLAccess.model.conditions;
+using System;
 
 namespace SQLAccess.model
 {
@@ -6,23 +7,26 @@ namespace SQLAccess.model
     {
         private Boolean show;
         private SORT sort;
-        private string constraint;
-        private string or;
+        private Condition constraint;
+        private Condition or;
 
         public bool Show { get => show; set => show = value; }
         public SORT Sort { get => sort; set => sort = value; }
-        public string Constraint { get => constraint; set => constraint = value; }
-        public string Or { get => or; set => or = value; }
+        public string AndExpression { get => constraint.Expression; set => constraint.Expression = value; }
+        public string AndValue { get => constraint.Value; set => constraint.Value = value; }
+
+        public string OrExpression { get => or.Expression; set => or.Expression = value; }
+        public string OrValue { get => or.Value; set => or.Value = value; }
 
         public ConstraintModel()
         {
             this.show = false;
             this.sort = SORT.NONE;
-            this.constraint = "";
-            this.or = "";
+            this.constraint = new Condition("", "");
+            this.or = new Condition("", "");
         }
 
-        public ConstraintModel(bool show, SORT sort, string constraint, string or)
+        public ConstraintModel(bool show, SORT sort, Condition constraint, Condition or)
         {
             this.show = show;
             this.sort = sort;
