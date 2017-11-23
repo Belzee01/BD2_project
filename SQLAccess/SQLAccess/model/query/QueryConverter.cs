@@ -71,11 +71,11 @@ namespace SQLAccess.model.query
 
         private void AssembleSortString(Query query, StringBuilder stringBuilder)
         {
-            List<string> columnsWithSort = new List<string>();
+            List<KeyValuePair<string, SORT>> columnsWithSort = new List<KeyValuePair<string, SORT>>();
             foreach (var column in query.Columns)
             {
-                if (column.Sort == true)
-                    columnsWithSort.Add(column.ColumnName);
+                if (column.Sort != SORT.NONE)
+                    columnsWithSort.Add(new KeyValuePair<string, SORT>(column.ColumnName, column.Sort));
             }
             stringBuilder.Append("order by");
 
@@ -83,9 +83,9 @@ namespace SQLAccess.model.query
             {
                 for (int i = 0; i < columnsWithSort.Count - 1; i++)
                 {
-                    stringBuilder.AppendFormat(" [{0}], ", columnsWithSort[i]);
+                    stringBuilder.AppendFormat(" [{0}] {1}, ", columnsWithSort[i].Key, columnsWithSort[i].Value);
                 }
-                stringBuilder.AppendFormat(" [{0}] ", columnsWithSort[columnsWithSort.Count - 1]);
+                stringBuilder.AppendFormat(" [{0}] {1} ", columnsWithSort[columnsWithSort.Count - 1].Key, columnsWithSort[columnsWithSort.Count - 1].Value);
             }
             else
             {

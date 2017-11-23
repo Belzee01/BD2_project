@@ -169,8 +169,6 @@ namespace SQLAccess
             double x = (double)eargs.Delta;
             double y = instScroll2.VerticalOffset;
 
-            Console.WriteLine("Percantage value: " + (y / instScroll2.ScrollableHeight) * 100.0);
-
             //// Optimalization mechanism TODO
             if (((y / instScroll2.ScrollableHeight) * 100.0) == 100.0)
                 LoadDynamicDataOffsetDown();
@@ -197,8 +195,6 @@ namespace SQLAccess
                 .Table(this.currentTable)
                 .Columns(this.queryModels)
                 .Build();
-
-            Console.WriteLine("ROWS Count: " + this.schemas.Rows.Count);
 
             DataTable temp = this.databaseManager.RetrieveDataByQuery(query, this.offsetDown);
 
