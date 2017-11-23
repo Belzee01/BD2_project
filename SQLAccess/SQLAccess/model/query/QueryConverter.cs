@@ -24,6 +24,8 @@ namespace SQLAccess.model.query
 
             sb.AppendFormat("OFFSET {0} ROWS FETCH NEXT 100 ROWS ONLY", offset);
 
+            query.CompleteQueryString = sb.ToString();
+
             return sb.ToString();
         }
 

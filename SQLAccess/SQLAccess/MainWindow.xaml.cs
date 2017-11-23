@@ -150,6 +150,8 @@ namespace SQLAccess
 
             this.schemas = this.databaseManager.RetrieveDataByQuery(query, this.offsetDown);
 
+            QueryBlock.Text = String.Format("SQL Query: \n{0}", query.CompleteQueryString);
+
             this.offsetDown = this.offsetDown + 100;
 
             ColumnDatGrid2.ItemsSource = schemas.DefaultView;
@@ -197,6 +199,7 @@ namespace SQLAccess
                 .Build();
 
             DataTable temp = this.databaseManager.RetrieveDataByQuery(query, this.offsetDown);
+            QueryBlock.Text = String.Format("SQL Query: \n{0}", query.CompleteQueryString);
 
             this.offsetDown = this.offsetDown + 100;
             this.schemas.Merge(temp);

@@ -122,7 +122,6 @@ namespace SQLAccess
                 MessageBox.Show(e.Message, "Confirmation", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
 
-
             return data;
         }
 
