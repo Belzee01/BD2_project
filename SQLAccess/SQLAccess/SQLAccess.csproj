@@ -63,6 +63,7 @@
     <Compile Include="model\query\Query.cs" />
     <Compile Include="model\query\QueryBuilder.cs" />
     <Compile Include="model\query\QueryConverter.cs" />
+    <Compile Include="model\RelationShipModel.cs" />
     <Compile Include="model\TableModel.cs" />
     <Compile Include="Utils.cs" />
     <Page Include="MainWindow.xaml">
@@ -73,7 +74,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="database\DatabaseService.cs" />
+    <Compile Include="database\DatabaseQueries.cs" />
     <Compile Include="database\DatabaseManager.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>

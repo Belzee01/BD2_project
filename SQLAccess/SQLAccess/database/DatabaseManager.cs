@@ -21,7 +21,7 @@ namespace SQLAccess
             {
                 conn.Open();
 
-                SqlCommand command = new SqlCommand("SELECT name, database_id, create_date FROM sys.databases", conn);
+                SqlCommand command = new SqlCommand(DatabaseQueries.databaseList, conn);
 
                 using (SqlDataReader reader = command.ExecuteReader())
                 {
@@ -42,7 +42,7 @@ namespace SQLAccess
             {
                 conn.Open();
 
-                SqlCommand command = new SqlCommand(String.Format("SELECT TABLE_SCHEMA, TABLE_NAME FROM {0}.INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE'", databaseName), conn);
+                SqlCommand command = new SqlCommand(String.Format(DatabaseQueries.schemaList, databaseName), conn);
                 
                 using (SqlDataReader reader = command.ExecuteReader())
                 {
@@ -62,15 +62,7 @@ namespace SQLAccess
             {
                 conn.Open();
 
-                SqlCommand command = new SqlCommand(String.Format("SELECT " +
-                    "AC.[name] AS[column_name]," +
-                    "TY.[name] AS system_data_type, AC.[max_length]," +
-                    "AC.[precision] " +
-                    "FROM {0}.sys.[tables] AS T " +
-                      "INNER JOIN {0}.sys.[all_columns] AC ON T.[object_id] = AC.[object_id] " +
-                     "INNER JOIN {0}.sys.[types] TY ON AC.[system_type_id] = TY.[system_type_id] AND AC.[user_type_id] = TY.[user_type_id] " +
-                    "WHERE T.[is_ms_shipped] = 0 and T.[name] like @1 and OBJECT_SCHEMA_NAME(T.[object_id], DB_ID('{0}')) like @2 " +
-                    "ORDER BY T.[name], AC.[column_id]", databaseName), conn);
+                SqlCommand command = new SqlCommand(String.Format(DatabaseQueries.tableData, databaseName), conn);
 
                 command.Parameters.Add(new SqlParameter("1", tableName));
                 command.Parameters.Add(new SqlParameter("2", tableSchema));
@@ -92,6 +84,27 @@ namespace SQLAccess
                 }
                 return new TableModel(new TableSchemaModel(tableSchema, tableName), listOfColumns);
             }
+        }
+
+        public List<RelationShipModel> RetrieveRelationShips(string database, string schema, string table)
+        {
+            List<RelationShipModel> listOfRelationShips = new List<RelationShipModel>();
+            using (SqlConnection conn = new SqlConnection(SQLAccess.Properties.Settings.Default.masterConnectionString))
+            {
+                conn.Open();
+
+                SqlCommand command = new SqlCommand(String.Format(DatabaseQueries.selectRelationShips, database, schema, table), conn);
+
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        listOfRelationShips.Add(new RelationShipModel((string)reader[0], (string)reader[1], (string)reader[2]));
+                    }
+                }
+            }
+
+            return listOfRelationShips;
         }
 
         public DataTable RetrieveDataByQuery(Query query, int offset)

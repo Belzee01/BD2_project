@@ -20,11 +20,18 @@ namespace SQLAccess
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var dbType = (DB_TYPE)value;
-
             // Default value for image
             var image = "drive";
+            var dbType = DB_TYPE.TABLE;
 
+            if (value == null)
+            {
+                image = "drive";
+
+            } else 
+                dbType = (DB_TYPE)value;
+
+            
             // Check what image should be displayed
             if (dbType == DB_TYPE.DATABASE)
                 image = "drive";
