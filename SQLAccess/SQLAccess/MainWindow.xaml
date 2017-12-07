@@ -43,7 +43,6 @@
                                                 Converter={x:Static local:HeaderToImageConverter.Instance}
                                         }"/>
                                             <TextBlock VerticalAlignment="Center" Text="{Binding}"/>
-                                            <Button x:Name="JoinButton" Click="JoinButton_Click" Content="JOIN" Visibility="Visible"></Button>
                                         </StackPanel>
                                     </DataTemplate>
                                 </Setter.Value>

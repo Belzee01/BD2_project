@@ -102,6 +102,7 @@ namespace SQLAccess
 
                 //Handle double click
                 sbt.MouseDoubleClick += Table_Clicked;
+                sbt.MouseRightButtonDown += Table_RightClick;
 
                 item.Items.Add(sbt);
             }
@@ -141,16 +142,21 @@ namespace SQLAccess
             var p = (TreeViewItem)item.Parent;
             foreach(TreeViewItem i in p.Items)
             {
+                i.FontWeight = FontWeights.Normal;
                 foreach(var r in currentRelationShips)
                 {
                     if(i.Header.ToString().Split('.')[1] == r.Refrenced)
                     {
-                        Button b = (Button)i.FindResource("System.Windows.Controls.Button");
-                        b.Visibility = Visibility.Visible;
-                        Console.WriteLine(b);
+                        Console.WriteLine(r.Refrenced);
+                        i.FontWeight = FontWeights.ExtraBold;
                     }
                 }
             }
+        }
+
+        private void Table_RightClick(object sender, RoutedEventArgs e)
+        {
+            Console.WriteLine("JOINING");
         }
 
         #endregion
@@ -221,11 +227,6 @@ namespace SQLAccess
 
             this.offsetDown = this.offsetDown + 100;
             this.schemas.Merge(temp);
-        }
-
-        private void JoinButton_Click(object sender, RoutedEventArgs e)
-        {
-
         }
     }
 }
