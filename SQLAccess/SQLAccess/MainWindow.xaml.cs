@@ -102,7 +102,6 @@ namespace SQLAccess
 
                 //Handle double click
                 sbt.MouseDoubleClick += Table_Clicked;
-                sbt.MouseRightButtonDown += Table_RightClick;
 
                 item.Items.Add(sbt);
             }
@@ -143,12 +142,14 @@ namespace SQLAccess
             foreach(TreeViewItem i in p.Items)
             {
                 i.FontWeight = FontWeights.Normal;
-                foreach(var r in currentRelationShips)
+                i.MouseRightButtonDown -= Table_RightClick;
+                foreach (var r in currentRelationShips)
                 {
                     if(i.Header.ToString().Split('.')[1] == r.Refrenced)
                     {
                         Console.WriteLine(r.Refrenced);
                         i.FontWeight = FontWeights.ExtraBold;
+                        i.MouseRightButtonDown += Table_RightClick;
                     }
                 }
             }
@@ -157,6 +158,34 @@ namespace SQLAccess
         private void Table_RightClick(object sender, RoutedEventArgs e)
         {
             Console.WriteLine("JOINING");
+            var item = (TreeViewItem)sender;
+
+            var tableName = (TableSchemaModel)item.Header;
+
+            var schema = tableName.Schema;
+            var table = tableName.TableName;
+
+            TableModel tableModel = this.databaseManager.SelectTableData(this.currentDatabase, schema, table);
+
+            List<CompactConstraintModel> joinModel = new List<CompactConstraintModel>();
+
+            foreach (var column in tableModel.Columns)
+            {
+                joinModel.Add(new CompactConstraintModel(column, new ConstraintModel()));
+            }
+
+            List<CompactConstraintModel> mSet = new List<CompactConstraintModel>();
+
+            foreach(var i in queryModels)
+            {
+                mSet.Add(i);
+            }
+
+            foreach(var i in joinModel)
+            {
+                mSet.Add(i);
+            }
+            ColumnDatGrid.DataContext = mSet;
         }
 
         #endregion
