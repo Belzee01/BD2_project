@@ -99,7 +99,7 @@ namespace SQLAccess
                 {
                     while (reader.Read())
                     {
-                        listOfRelationShips.Add(new RelationShipModel((string)reader[0], (string)reader[1], (string)reader[2]));
+                        listOfRelationShips.Add(new RelationShipModel((string)reader[0], (string)reader[1], (string)reader[2], (string)reader[3], (string)reader[4]));
                     }
                 }
             }
@@ -120,7 +120,7 @@ namespace SQLAccess
                 {
                     while (reader.Read())
                     {
-                        relation = new RelationShipModel((string)reader[0], (string)reader[1], (string)reader[2]);
+                        relation = new RelationShipModel((string)reader[0], (string)reader[1], (string)reader[2], (string)reader[3], (string)reader[4]);
                     }
                 }
             }

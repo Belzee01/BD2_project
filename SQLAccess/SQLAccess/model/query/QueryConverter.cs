@@ -22,8 +22,8 @@ namespace SQLAccess.model.query
             foreach (var i in query.RelationShip)
             {
                 sb.Append(" join ");
-                sb.AppendFormat("{0}.{1}.{2}", query.Database, query.Schema, i.Refrenced);
-                sb.AppendFormat(" on {0}.{1}.{2}.{3}={0}.{1}.{4}.{3} ", query.Database, query.Schema, query.Table, i.Name, i.Refrenced);
+                sb.AppendFormat("{0}.{1}.{2}", query.Database, i.RefrencedSchema, i.Refrenced);
+                sb.AppendFormat(" on {0}.{1}.{2}.{3}={0}.{4}.{5}.{3} ", query.Database, query.Schema, query.Table, i.Name, i.RefrencedSchema, i.Refrenced);
             }
 
             AssembleConstraintsString(query, sb);

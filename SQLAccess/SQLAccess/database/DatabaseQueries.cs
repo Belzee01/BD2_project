@@ -23,8 +23,9 @@ namespace SQLAccess
                     "ORDER BY T.[name], AC.[column_id]";
 
 
-        public static string selectRelationShips = "SELECT " + 
-            "tp.name 'Parent', cp.name, tr.name 'Refrenced' FROM " +
+        public static string selectRelationShips = "SELECT " +
+            "OBJECT_SCHEMA_NAME(tp.[object_id], DB_ID('{0}')) as parent_schema, " +
+            "tp.name 'Parent', cp.name, 	OBJECT_SCHEMA_NAME(tr.[object_id], DB_ID('{0}')) as reference_schema, tr.name 'Refrenced' FROM " +
             "{0}.sys.foreign_keys fk INNER JOIN {0}.sys.tables tp ON fk.parent_object_id = tp.object_id " +
             "INNER JOIN {0}.sys.tables tr ON fk.referenced_object_id = tr.object_id " +
             "INNER JOIN {0}.sys.foreign_key_columns fkc ON fkc.constraint_object_id = fk.object_id " +
@@ -34,7 +35,8 @@ namespace SQLAccess
             "and tp.name = '{2}'";
 
         public static string selectRelationShip = "SELECT " +
-           "tp.name 'Parent', cp.name, tr.name 'Refrenced' FROM " +
+           "OBJECT_SCHEMA_NAME(tp.[object_id], DB_ID('{0}')) as parent_schema, " +
+           "tp.name 'Parent', cp.name, 	OBJECT_SCHEMA_NAME(tr.[object_id], DB_ID('{0}')) as reference_schema, tr.name 'Refrenced' FROM " +
            "{0}.sys.foreign_keys fk INNER JOIN {0}.sys.tables tp ON fk.parent_object_id = tp.object_id " +
            "INNER JOIN {0}.sys.tables tr ON fk.referenced_object_id = tr.object_id " +
            "INNER JOIN {0}.sys.foreign_key_columns fkc ON fkc.constraint_object_id = fk.object_id " +
