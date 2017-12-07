@@ -26,6 +26,8 @@ namespace SQLAccess
 
         private List<CompactConstraintModel> queryModels;
 
+        private List<RelationShipModel> relationShipModels;
+
         private List<ColumnModel> tableData;
         private DataTable schemas;
         public ICollectionView Customers { get; private set; }
@@ -38,6 +40,7 @@ namespace SQLAccess
             this.tableData = new List<ColumnModel>();
             this.queryModels = new List<CompactConstraintModel>();
             this.schemas = new DataTable();
+            this.relationShipModels = new List<RelationShipModel>();
         }
         #endregion
 
@@ -116,6 +119,7 @@ namespace SQLAccess
         /// <param name="e"></param>
         private void Table_Clicked(object sender, RoutedEventArgs e)
         {
+            this.relationShipModels.Clear();
             var item = (TreeViewItem)sender;
 
             var tableName = (TableSchemaModel)item.Header;
@@ -139,13 +143,13 @@ namespace SQLAccess
                 this.currentTable);
 
             var p = (TreeViewItem)item.Parent;
-            foreach(TreeViewItem i in p.Items)
+            foreach (TreeViewItem i in p.Items)
             {
                 i.FontWeight = FontWeights.Normal;
                 i.MouseRightButtonDown -= Table_RightClick;
                 foreach (var r in currentRelationShips)
                 {
-                    if(i.Header.ToString().Split('.')[1] == r.Refrenced)
+                    if (i.Header.ToString().Split('.')[1] == r.Refrenced)
                     {
                         Console.WriteLine(r.Refrenced);
                         i.FontWeight = FontWeights.ExtraBold;
@@ -165,6 +169,10 @@ namespace SQLAccess
             var schema = tableName.Schema;
             var table = tableName.TableName;
 
+            RelationShipModel relation = databaseManager.RetrieveRelationShip(this.currentDatabase, this.currentSchema, this.currentTable, table);
+
+            relationShipModels.Add(relation);
+
             TableModel tableModel = this.databaseManager.SelectTableData(this.currentDatabase, schema, table);
 
             List<CompactConstraintModel> joinModel = new List<CompactConstraintModel>();
@@ -176,15 +184,18 @@ namespace SQLAccess
 
             List<CompactConstraintModel> mSet = new List<CompactConstraintModel>();
 
-            foreach(var i in queryModels)
+            foreach (var i in queryModels)
             {
                 mSet.Add(i);
             }
 
-            foreach(var i in joinModel)
+            foreach (var i in joinModel)
             {
                 mSet.Add(i);
             }
+
+            this.queryModels = mSet;
+
             ColumnDatGrid.DataContext = mSet;
         }
 
@@ -198,6 +209,7 @@ namespace SQLAccess
                 .Database(this.currentDatabase)
                 .Schema(this.currentSchema)
                 .Table(this.currentTable)
+                .Join(this.relationShipModels)
                 .Columns(this.queryModels)
                 .Build();
 
@@ -248,6 +260,7 @@ namespace SQLAccess
                 .Database(this.currentDatabase)
                 .Schema(this.currentSchema)
                 .Table(this.currentTable)
+                .Join(this.relationShipModels)
                 .Columns(this.queryModels)
                 .Build();
 

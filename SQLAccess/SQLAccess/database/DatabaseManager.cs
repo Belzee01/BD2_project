@@ -73,7 +73,7 @@ namespace SQLAccess
                     {
                         try
                         {
-                            listOfColumns.Add(new ColumnModel((string)reader[0], (string)reader[1], (short)reader[2], (byte)reader[3]));
+                            listOfColumns.Add(new ColumnModel(tableName + "." + (string)reader[0], (string)reader[1], (short)reader[2], (byte)reader[3]));
                         }
                         catch (System.ArgumentException e)
                         {
@@ -105,6 +105,27 @@ namespace SQLAccess
             }
 
             return listOfRelationShips;
+        }
+
+        public RelationShipModel RetrieveRelationShip(string database, string schema, string table, string reference)
+        {
+            RelationShipModel relation = null;
+            using (SqlConnection conn = new SqlConnection(SQLAccess.Properties.Settings.Default.masterConnectionString))
+            {
+                conn.Open();
+
+                SqlCommand command = new SqlCommand(String.Format(DatabaseQueries.selectRelationShip, database, schema, table, reference), conn);
+
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        relation = new RelationShipModel((string)reader[0], (string)reader[1], (string)reader[2]);
+                    }
+                }
+            }
+
+            return relation;
         }
 
         public DataTable RetrieveDataByQuery(Query query, int offset)

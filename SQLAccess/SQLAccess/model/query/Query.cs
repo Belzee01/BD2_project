@@ -14,6 +14,7 @@ namespace SQLAccess.model.query
         }
 
         private List<CompactConstraintModel> columns;
+        private List<RelationShipModel> relationShip;
         private string database;
         private string schema;
         private string table;
@@ -25,5 +26,6 @@ namespace SQLAccess.model.query
         public string Schema { get => schema; set => schema = value; }
         public string Table { get => table; set => table = value; }
         public string CompleteQueryString { get => completeQueryString; set => completeQueryString = value; }
+        internal List<RelationShipModel> RelationShip { get => relationShip; set => relationShip = value; }
     }
 }

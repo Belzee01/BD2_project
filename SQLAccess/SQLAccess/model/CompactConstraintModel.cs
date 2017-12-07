@@ -31,5 +31,15 @@ namespace SQLAccess
         {
             return base.ToString();
         }
+
+        public override int GetHashCode()
+        {
+            return this.ColumnName.GetHashCode();
+        }
+
+        public override bool Equals(object obj)
+        {
+            return this.ColumnName == ((CompactConstraintModel)obj).ColumnName;
+        }
     }
 }

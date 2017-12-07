@@ -19,6 +19,13 @@ namespace SQLAccess.model.query
             AssembleColumnsString(query, sb);
             sb.AppendFormat("from {0}.{1}.{2} ", query.Database, query.Schema, query.Table);
 
+            foreach (var i in query.RelationShip)
+            {
+                sb.Append(" join ");
+                sb.AppendFormat("{0}.{1}.{2}", query.Database, query.Schema, i.Refrenced);
+                sb.AppendFormat(" on {0}.{1}.{2}.{3}={0}.{1}.{4}.{3} ", query.Database, query.Schema, query.Table, i.Name, i.Refrenced);
+            }
+
             AssembleConstraintsString(query, sb);
             AssembleSortString(query, sb);
 
@@ -46,9 +53,9 @@ namespace SQLAccess.model.query
             {
                 for (int i = 0; i < columnNames.Count - 1; i++)
                 {
-                    stringBuilder.AppendFormat(" [{0}], ", columnNames[i]);
+                    stringBuilder.AppendFormat(" {0}, ", columnNames[i]);
                 }
-                stringBuilder.AppendFormat(" [{0}] ", columnNames[columnNames.Count - 1]);
+                stringBuilder.AppendFormat(" {0} ", columnNames[columnNames.Count - 1]);
             }
         }
 
@@ -81,14 +88,14 @@ namespace SQLAccess.model.query
                     else
                         stringBuilder.Append(") and ");
                 }
-                stringBuilder.AppendFormat("([{0}] {1} {2} ",
+                stringBuilder.AppendFormat("({0} {1} {2} ",
                     columnWithConstraints[columnWithConstraints.Count - 1].ColumnName,
                     columnWithConstraints[columnWithConstraints.Count - 1].And,
                     ValidateValue(columnWithConstraints[columnWithConstraints.Count - 1].AndValue));
 
                 if (columnWithConstraints[columnWithConstraints.Count - 1].Or != "" && columnWithConstraints[columnWithConstraints.Count - 1].OrValue != null && (string)columnWithConstraints[columnWithConstraints.Count - 1].OrValue != "")
                 {
-                    stringBuilder.AppendFormat("or [{0}] {1} {2}) ",
+                    stringBuilder.AppendFormat("or {0} {1} {2}) ",
                         columnWithConstraints[columnWithConstraints.Count - 1].ColumnName,
                         columnWithConstraints[columnWithConstraints.Count - 1].Or,
                         ValidateValue(columnWithConstraints[columnWithConstraints.Count - 1].OrValue));
@@ -112,9 +119,9 @@ namespace SQLAccess.model.query
             {
                 for (int i = 0; i < columnsWithSort.Count - 1; i++)
                 {
-                    stringBuilder.AppendFormat(" [{0}] {1}, ", columnsWithSort[i].Key, columnsWithSort[i].Value);
+                    stringBuilder.AppendFormat(" {0} {1}, ", columnsWithSort[i].Key, columnsWithSort[i].Value);
                 }
-                stringBuilder.AppendFormat(" [{0}] {1} ", columnsWithSort[columnsWithSort.Count - 1].Key, columnsWithSort[columnsWithSort.Count - 1].Value);
+                stringBuilder.AppendFormat(" {0} {1} ", columnsWithSort[columnsWithSort.Count - 1].Key, columnsWithSort[columnsWithSort.Count - 1].Value);
             }
             else
             {

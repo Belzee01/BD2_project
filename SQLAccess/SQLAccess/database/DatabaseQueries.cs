@@ -32,5 +32,15 @@ namespace SQLAccess
             "INNER JOIN {0}.sys.columns cr ON fkc.referenced_column_id = cr.column_id AND fkc.referenced_object_id = cr.object_id " + 
             "where OBJECT_SCHEMA_NAME(tp.[object_id], DB_ID('{0}')) like '{1}' " + 
             "and tp.name = '{2}'";
+
+        public static string selectRelationShip = "SELECT " +
+           "tp.name 'Parent', cp.name, tr.name 'Refrenced' FROM " +
+           "{0}.sys.foreign_keys fk INNER JOIN {0}.sys.tables tp ON fk.parent_object_id = tp.object_id " +
+           "INNER JOIN {0}.sys.tables tr ON fk.referenced_object_id = tr.object_id " +
+           "INNER JOIN {0}.sys.foreign_key_columns fkc ON fkc.constraint_object_id = fk.object_id " +
+           "INNER JOIN {0}.sys.columns cp ON fkc.parent_column_id = cp.column_id AND fkc.parent_object_id = cp.object_id " +
+           "INNER JOIN {0}.sys.columns cr ON fkc.referenced_column_id = cr.column_id AND fkc.referenced_object_id = cr.object_id " +
+           "where OBJECT_SCHEMA_NAME(tp.[object_id], DB_ID('{0}')) like '{1}' " +
+           "and tp.name = '{2}' and tr.name='{3}'";
     }
 }

@@ -16,6 +16,12 @@ namespace SQLAccess.model.query
             return query;
         }
 
+        public QueryBuilder Join(List<RelationShipModel> relationShipModel)
+        {
+            this.query.RelationShip = relationShipModel;
+            return this;
+        }
+
         public QueryBuilder Columns(List<CompactConstraintModel> columns)
         {
             this.query.Columns = columns;

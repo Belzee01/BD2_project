@@ -22,5 +22,9 @@ namespace SQLAccess.model
             this.name = name;
             this.refrenced = refrenced;
         }
+
+        public RelationShipModel()
+        {
+        }
     }
 }
