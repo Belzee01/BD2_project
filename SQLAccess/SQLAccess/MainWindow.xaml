@@ -24,6 +24,7 @@
         <StackPanel Orientation="Horizontal" Grid.Column="0">
             <Grid>
                 <TreeView x:Name="DatabaseView">
+                    
                     <TreeView.Resources>
 
                         <Style TargetType="{x:Type TreeViewItem}">

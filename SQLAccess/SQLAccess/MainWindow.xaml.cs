@@ -81,6 +81,12 @@ namespace SQLAccess
         private void Database_Expanded(object sender, RoutedEventArgs e)
         {
             var item = (TreeViewItem)sender;
+            foreach(TreeViewItem i in DatabaseView.Items)
+            {
+                if(i.IsExpanded == true && i != item)
+                    i.IsExpanded = false;
+            }
+            item.IsExpanded = true;
 
             // If the item only contains dummy data
             if (item.Items.Count != 1 && item.Items[0] != null)
