@@ -17,19 +17,26 @@ namespace SQLAccess
         public List<DatabaseModel> SelectDatabaseList()
         {
             List<DatabaseModel> listOfDatabases = new List<DatabaseModel>();
-            using (SqlConnection conn = new SqlConnection(SQLAccess.Properties.Settings.Default.masterConnectionString))
+            try
             {
-                conn.Open();
-
-                SqlCommand command = new SqlCommand(DatabaseQueries.databaseList, conn);
-
-                using (SqlDataReader reader = command.ExecuteReader())
+                using (SqlConnection conn = new SqlConnection(SQLAccess.Properties.Settings.Default.masterConnectionString))
                 {
-                    while (reader.Read())
+                    conn.Open();
+
+                    SqlCommand command = new SqlCommand(DatabaseQueries.databaseList, conn);
+
+                    using (SqlDataReader reader = command.ExecuteReader())
                     {
-                        listOfDatabases.Add(new DatabaseModel((string)reader[0], (int)reader[1], (DateTime)reader[2]));
+                        while (reader.Read())
+                        {
+                            listOfDatabases.Add(new DatabaseModel((string)reader[0], (int)reader[1], (DateTime)reader[2]));
+                        }
                     }
                 }
+            }
+            catch (SqlException e)
+            {
+                MessageBox.Show(e.Message);
             }
             return listOfDatabases;
         }
@@ -38,19 +45,26 @@ namespace SQLAccess
         public List<TableSchemaModel> SelectTableSchemaList(string databaseName)
         {
             List<TableSchemaModel> listOfTableSchemas = new List<TableSchemaModel>();
-            using (SqlConnection conn = new SqlConnection(SQLAccess.Properties.Settings.Default.masterConnectionString))
+            try
             {
-                conn.Open();
-
-                SqlCommand command = new SqlCommand(String.Format(DatabaseQueries.schemaList, databaseName), conn);
-                
-                using (SqlDataReader reader = command.ExecuteReader())
+                using (SqlConnection conn = new SqlConnection(SQLAccess.Properties.Settings.Default.masterConnectionString))
                 {
-                    while (reader.Read())
+                    conn.Open();
+
+                    SqlCommand command = new SqlCommand(String.Format(DatabaseQueries.schemaList, databaseName), conn);
+
+                    using (SqlDataReader reader = command.ExecuteReader())
                     {
-                        listOfTableSchemas.Add(new TableSchemaModel((string)reader[0], (string)reader[1]));
+                        while (reader.Read())
+                        {
+                            listOfTableSchemas.Add(new TableSchemaModel((string)reader[0], (string)reader[1]));
+                        }
                     }
                 }
+            }
+            catch (SqlException e)
+            {
+                MessageBox.Show(e.Message);
             }
             return listOfTableSchemas;
         }
@@ -58,50 +72,64 @@ namespace SQLAccess
         public TableModel SelectTableData(string databaseName, string tableSchema, string tableName)
         {
             List<ColumnModel> listOfColumns = new List<ColumnModel>();
-            using (SqlConnection conn = new SqlConnection(SQLAccess.Properties.Settings.Default.masterConnectionString))
+            try
             {
-                conn.Open();
-
-                SqlCommand command = new SqlCommand(String.Format(DatabaseQueries.tableData, databaseName), conn);
-
-                command.Parameters.Add(new SqlParameter("1", tableName));
-                command.Parameters.Add(new SqlParameter("2", tableSchema));
-                
-                using (SqlDataReader reader = command.ExecuteReader())
+                using (SqlConnection conn = new SqlConnection(SQLAccess.Properties.Settings.Default.masterConnectionString))
                 {
-                    while (reader.Read())
-                    {
-                        try
-                        {
-                            listOfColumns.Add(new ColumnModel(tableName + "." + (string)reader[0], (string)reader[1], (short)reader[2], (byte)reader[3]));
-                        }
-                        catch (System.ArgumentException e)
-                        {
-                            MessageBox.Show("Type not found : " + e.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    conn.Open();
 
+                    SqlCommand command = new SqlCommand(String.Format(DatabaseQueries.tableData, databaseName), conn);
+
+                    command.Parameters.Add(new SqlParameter("1", tableName));
+                    command.Parameters.Add(new SqlParameter("2", tableSchema));
+
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            try
+                            {
+                                listOfColumns.Add(new ColumnModel(tableName + "." + (string)reader[0], (string)reader[1], (short)reader[2], (byte)reader[3]));
+                            }
+                            catch (System.ArgumentException e)
+                            {
+                                MessageBox.Show("Type not found : " + e.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+
+                            }
                         }
                     }
                 }
-                return new TableModel(new TableSchemaModel(tableSchema, tableName), listOfColumns);
             }
+            catch (SqlException e)
+            {
+                MessageBox.Show(e.Message);
+            }
+            return new TableModel(new TableSchemaModel(tableSchema, tableName), listOfColumns);
         }
 
         public List<RelationShipModel> RetrieveRelationShips(string database, string schema, string table)
         {
             List<RelationShipModel> listOfRelationShips = new List<RelationShipModel>();
-            using (SqlConnection conn = new SqlConnection(SQLAccess.Properties.Settings.Default.masterConnectionString))
+            try
             {
-                conn.Open();
-
-                SqlCommand command = new SqlCommand(String.Format(DatabaseQueries.selectRelationShips, database, schema, table), conn);
-
-                using (SqlDataReader reader = command.ExecuteReader())
+                using (SqlConnection conn = new SqlConnection(SQLAccess.Properties.Settings.Default.masterConnectionString))
                 {
-                    while (reader.Read())
+                    conn.Open();
+
+                    SqlCommand command = new SqlCommand(String.Format(DatabaseQueries.selectRelationShips, database, schema, table), conn);
+
+                    using (SqlDataReader reader = command.ExecuteReader())
                     {
-                        listOfRelationShips.Add(new RelationShipModel((string)reader[0], (string)reader[1], (string)reader[2], (string)reader[3], (string)reader[4]));
+                        while (reader.Read())
+                        {
+                            listOfRelationShips.Add(new RelationShipModel((string)reader[0], (string)reader[1], (string)reader[2], (string)reader[3], (string)reader[4]));
+                        }
                     }
                 }
+            }
+            catch (SqlException e)
+            {
+                MessageBox.Show(e.Message);
             }
 
             return listOfRelationShips;
@@ -110,21 +138,27 @@ namespace SQLAccess
         public RelationShipModel RetrieveRelationShip(string database, string schema, string table, string reference)
         {
             RelationShipModel relation = null;
-            using (SqlConnection conn = new SqlConnection(SQLAccess.Properties.Settings.Default.masterConnectionString))
+            try
             {
-                conn.Open();
-
-                SqlCommand command = new SqlCommand(String.Format(DatabaseQueries.selectRelationShip, database, schema, table, reference), conn);
-
-                using (SqlDataReader reader = command.ExecuteReader())
+                using (SqlConnection conn = new SqlConnection(SQLAccess.Properties.Settings.Default.masterConnectionString))
                 {
-                    while (reader.Read())
+                    conn.Open();
+
+                    SqlCommand command = new SqlCommand(String.Format(DatabaseQueries.selectRelationShip, database, schema, table, reference), conn);
+
+                    using (SqlDataReader reader = command.ExecuteReader())
                     {
-                        relation = new RelationShipModel((string)reader[0], (string)reader[1], (string)reader[2], (string)reader[3], (string)reader[4]);
+                        while (reader.Read())
+                        {
+                            relation = new RelationShipModel((string)reader[0], (string)reader[1], (string)reader[2], (string)reader[3], (string)reader[4]);
+                        }
                     }
                 }
             }
-
+            catch (SqlException e)
+            {
+                MessageBox.Show(e.Message);
+            }
             return relation;
         }
 
@@ -144,7 +178,8 @@ namespace SQLAccess
                     try
                     {
                         adapter.Fill(data);
-                    } catch(SqlException e)
+                    }
+                    catch (SqlException e)
                     {
                         MessageBox.Show(e.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
 

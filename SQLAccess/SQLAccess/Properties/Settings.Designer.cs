@@ -22,18 +22,7 @@ namespace SQLAccess.Properties {
                 return defaultInstance;
             }
         }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
-        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=ADMINRG-OJBROL2\\SQLEXPRESS;Initial Catalog=AdventureWorks;Integrated " +
-            "Security=True")]
-        public string AdventureWorksConnectionString {
-            get {
-                return ((string)(this["AdventureWorksConnectionString"]));
-            }
-        }
-        
+
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
